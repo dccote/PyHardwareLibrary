@@ -253,6 +253,9 @@ class TestDeviceManager(unittest.TestCase):
 
             device[0].shutdownDevice()
 
+    def testListCommand(self):
+        DeviceManager().sendCommand("LIST")
+
 
 if __name__ == '__main__':
     unittest.main()

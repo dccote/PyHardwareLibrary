@@ -109,10 +109,14 @@ class DeviceManager:
             self.devices = set()
         if not hasattr(self, 'quitMonitoring'):
             self.quitMonitoring = False
+        if not hasattr(self, 'quitServer'):
+            self.quitServer = False
         if not hasattr(self, 'lock'):
             self.lock = RLock()
         if not hasattr(self, 'monitoring'):
             self.monitoring = None
+        if not hasattr(self, 'server'):
+            self.server = None
         if not hasattr(self, 'usbDevices'):
             self.usbDevices = []
         if not hasattr(self, 'usbDeviceDescriptors'):
@@ -134,6 +138,15 @@ class DeviceManager:
                 self.monitoring = Thread(target=self.monitoringLoop, name="DeviceManager-RunLoop")
                 NotificationCenter().postNotification(notificationName=DeviceManagerNotification.willStartMonitoring, notifyingObject=self)
                 self.monitoring.start()
+            else:
+                raise RuntimeError("Monitoring loop already running")
+
+    def startServer(self):
+        with self.lock:
+            if not self.isServing:
+                self.quitServer = False
+                self.server = Thread(target=self.serverLoop, name="DeviceManager-ServerLoop")
+                self.server.start()
             else:
                 raise RuntimeError("Monitoring loop already running")
 
@@ -178,6 +191,19 @@ class DeviceManager:
         nc.addObserver(self, self.handleNotifications, DeviceManagerNotification.usbDeviceDidConnect)
         nc.addObserver(self, self.handleNotifications, DeviceManagerNotification.usbDeviceDidDisconnect)
 
+    def serverLoop(self):
+        import socket,os
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+        sock.bind(('127.0.0.1', 12345))  
+        sock.listen(5)  
+        while True:  
+            connection,address = sock.accept()  
+            buf = connection.recv(1024)  
+            print(buf)
+            connection.send(buf)            
+            connection.close()
+
+
     def handleNotifications(self, notification):
         print(notification.name, notification.userInfo)
 
@@ -193,6 +219,11 @@ class DeviceManager:
     def isMonitoring(self):
         with self.lock:
             return self.monitoring is not None
+
+    @property
+    def isServing(self):
+        with self.lock:
+            return self.server is not None
     
     def stopMonitoring(self):
         if self.isMonitoring:
@@ -305,7 +336,9 @@ class DeviceManager:
         DeviceManager().updateConnectedDevices()
         device = list(self.devices)[deviceIdentifier]
 
-        if device.state == DeviceState.Ready:
+        if re.search("^list$", commandName, re.IGNORECASE) is not None:
+            print(self.devices)
+        elif device.state == DeviceState.Ready:
             command = device.commands[commandName]
             command.send(port=device.port)
             return (commandName, command.text, command.matchGroups)

@@ -100,7 +100,10 @@ class OpenCVCamera(CameraDevice):
         self.cameraHandler = None
         self.cvCameraIndex = 0
         if serialNumber is not None:
-            self.cvCameraIndex = int(serialNumber)
+            try:
+                self.cvCameraIndex = int(serialNumber)
+            except Exception:
+                pass
 
     def openCVProperties(self):
         properties = {}
@@ -114,6 +117,8 @@ class OpenCVCamera(CameraDevice):
 
     @classmethod
     def isCompatibleWith(cls, serialNumber, idProduct, idVendor):
+
+
         try:
             cameraIndex = int(serialNumber)
         except Exception as err:
@@ -166,7 +171,7 @@ class OpenCVCamera(CameraDevice):
 
 if __name__ == "__main__":
     print(OpenCVCamera.availableCameras())
-    cam = OpenCVCamera()
+    cam = OpenCVCamera(1)
     cam.initializeDevice()
     cam.livePreview()
     cam.shutdownDevice()

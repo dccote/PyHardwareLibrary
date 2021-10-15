@@ -1,26 +1,27 @@
-from hardwarelibrary import DeviceManager
-from hardwarelibrary import NotificationCenter
-from hardwarelibrary import PhysicalDeviceNotification
+from hardwarelibrary.devicemanager import DeviceManager
 
-class Observer:
-	def print(self, notification):
-		print(notification.userInfo)
+DeviceManager().startServer()
 
+# import usb.core
 
-dm = DeviceManager()
-devices = dm.updateConnectedDevices()
-meter = dm.anyPowerMeterDevice()
-meter.initializeDevice()
+# def isCamera(dev):
+#     import usb.util 
+#     if dev.bDeviceClass == 0xe:
+#         return True
 
-observer = Observer()
-NotificationCenter().addObserver(observer, 
-	                             observer.print, 
-	                             notificationName=PhysicalDeviceNotification.status,
-	                             observedObject=meter)
+#     for cfg in dev:
+#         if usb.util.find_descriptor(cfg, bInterfaceClass=0xe) is not None:
+#             return True
 
-meter.startBackgroundStatusUpdates()
+# for cam in usb.core.find(find_all=True, custom_match = isCamera):
+#     print(cam)
 
 
-# spectro = dm.anySpectrometerDevice()
-# spectro.display()
+# # devs = usb.core.find(find_all=True)
 
+# # for device in devs:
+# #   configuration = device.get_active_configuration()
+# #   interface = configuration[(0, 0)]
+
+# #   if interface.bInterfaceClass == 0xe :
+# #       print(interface)
