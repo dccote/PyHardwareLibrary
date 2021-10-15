@@ -198,10 +198,17 @@ class DeviceManager:
         sock.listen(5)  
         while True:  
             connection,address = sock.accept()  
-            buf = connection.recv(1024)  
-            print(buf)
-            connection.send(buf)            
-            connection.close()
+            c = None
+            buffer = []
+            while c != b'\n' and c != b'\r':
+                c = connection.recv(1)
+                buffer.append(c)
+                print(c)
+
+            print(buffer)
+            connection.send(b"I did receive something")            
+        
+        connection.close()
 
 
     def handleNotifications(self, notification):
