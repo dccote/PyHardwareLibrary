@@ -1,6 +1,7 @@
 import time
 import re
 from enum import Enum
+import copy
 from typing import NamedTuple
 from threading import Thread, RLock
 from hardwarelibrary.notificationcenter import NotificationCenter, Notification
@@ -117,6 +118,10 @@ class DeviceManager:
             self.monitoring = None
         if not hasattr(self, 'server'):
             self.server = None
+        if not hasattr(self, 'sock'):
+            self.sock = None
+        if not hasattr(self, 'serverConnection'):
+            self.serverConnection = None
         if not hasattr(self, 'usbDevices'):
             self.usbDevices = []
         if not hasattr(self, 'usbDeviceDescriptors'):
@@ -193,23 +198,33 @@ class DeviceManager:
 
     def serverLoop(self):
         import socket,os
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-        sock.bind(('127.0.0.1', 12345))  
-        sock.listen(5)  
-        while True:  
-            connection,address = sock.accept()  
-            c = None
-            buffer = []
-            while c != b'\n' and c != b'\r':
-                c = connection.recv(1)
-                buffer.append(c)
-                print(c)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind(('127.0.0.1', 12345))
+        self.sock.listen(5)
+        try:
+            while not self.quitServer:
+                connection, address = self.sock.accept()
 
-            print(buffer)
-            connection.send(b"I did receive something")            
-        
-        connection.close()
+                while True:
+                    c = None
+                    bytes = bytearray()
+                    while c != b'\n':
+                        c = connection.recv(1)
+                        bytes.extend(c)
 
+                    commandName = bytes.decode("utf-8")
+                    command = self.sendCommand(commandName)
+                    print("Received request {0}".format(commandName))
+
+                    if command is not None:
+                        print("Reply received {0}".format(command.reply))
+                        connection.send(b"device replied: {0}".format(command.reply))
+
+        except Exception as err:
+            with self.lock:
+                if self.serverConnection is not None:
+                    self.serverConnection.close()
+                    self.sock.close()
 
     def handleNotifications(self, notification):
         print(notification.name, notification.userInfo)
@@ -240,8 +255,20 @@ class DeviceManager:
             self.monitoring.join()
             self.removeAllDevices()
             self.monitoring = None
+            print("Monitoring stopped")
         else:
             raise RuntimeError("No monitoring loop running")
+
+    def stopServer(self):
+        if self.isServing:
+            with self.lock:
+                self.quitServer = True
+                self.sock.close()
+            self.server.join()
+            self.server = None
+            print("Server stopped")
+        else:
+            raise RuntimeError("No server loop running")
 
     def usbDeviceConnected(self, usbDevice):
         descriptor = USBDeviceDescriptor.fromUSBDevice(usbDevice)
@@ -341,14 +368,19 @@ class DeviceManager:
 
     def sendCommand(self, commandName, deviceIdentifier=0):
         DeviceManager().updateConnectedDevices()
-        device = list(self.devices)[deviceIdentifier]
 
-        if re.search("^list$", commandName, re.IGNORECASE) is not None:
-            print(self.devices)
-        elif device.state == DeviceState.Ready:
-            command = device.commands[commandName]
-            command.send(port=device.port)
-            return (commandName, command.text, command.matchGroups)
-        else:
-            print("Device {0} is not Ready: call initializeDevice()".format(device))
+        if re.search("^list dev\W", commandName, re.IGNORECASE) is not None:
+            print("PhysicalDevices: {0}".format(self.devices))
+        elif re.search("^list usb\W", commandName, re.IGNORECASE) is not None:
+            print("USB devices: {0}".format(self.usbDevices))
 
+        if len(self.devices) > 0:
+            device = list(self.devices)[deviceIdentifier]
+            if device.state == DeviceState.Ready:
+                command = copy.deepcopy(device.commands[commandName])
+                command.send(port=device.port)
+                return command
+            else:
+                print("Device {0} is not Ready: call initializeDevice()".format(device))
+
+        return None

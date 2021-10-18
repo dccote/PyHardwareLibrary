@@ -12,10 +12,16 @@ import signal
 import sys
 
 def signal_handler(sig, frame):
+    print('Quitting nicely !')
     dm = DeviceManager()
-    if dm.isMonitoring and not dm.quitMonitoring:
-        print('Quitting nicely')
+    try:
         dm.stopMonitoring()
+    except Exception as err:
+        print(err)
+    try:
+        dm.stopServer()
+    except Exception as err:
+        print(err)
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -55,4 +61,5 @@ if deviceManager == True:
     dm = DeviceManager()
     dm.showNotifications()
     dm.startMonitoring()
+    dm.startServer()
 

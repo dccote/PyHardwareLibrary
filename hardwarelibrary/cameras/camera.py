@@ -117,8 +117,7 @@ class OpenCVCamera(CameraDevice):
 
     @classmethod
     def isCompatibleWith(cls, serialNumber, idProduct, idVendor):
-
-
+        return False
         try:
             cameraIndex = int(serialNumber)
         except Exception as err:
