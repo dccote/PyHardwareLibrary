@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1a2b906-4e8f-4edb-8efe-d2e272bf62ab" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/hardwarelibrary/communication/socketport.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hardwarelibrary/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/hardwarelibrary/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hardwarelibrary/cameras/camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/hardwarelibrary/cameras/camera.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hardwarelibrary/devicemanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/hardwarelibrary/devicemanager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hardwarelibrary/communication/communicationport.py" beforeDir="false" afterPath="$PROJECT_DIR$/hardwarelibrary/communication/communicationport.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,9 @@
     <setting file="file://$PROJECT_DIR$/hardwarelibrary/physicaldevice.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1rXcTDuE03oci98RSwsrUTjuvkU" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -244,6 +245,7 @@
       <workItem from="1634084413305" duration="2217000" />
       <workItem from="1634148132353" duration="3076000" />
       <workItem from="1634235068483" duration="38000" />
+      <workItem from="1634579144883" duration="1585000" />
     </task>
     <servers />
   </component>

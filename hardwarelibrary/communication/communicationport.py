@@ -125,3 +125,6 @@ class CommunicationPort:
         else:
             raise CommunicationReadNoMatch("Unable to match pattern:'{0}' in reply:'{1}'".format(replyPattern, reply))
 
+
+class ServerPort(CommunicationPort):
+    pass
