@@ -4,6 +4,7 @@ from .usbport import USBPort
 from .diagnostics import USBParameters, DeviceCommand, USBDeviceDescription
 from .debugport import DebugPort
 from .echoport import DebugEchoPort
+from .socketport import SocketPort
 import usb.backend.libusb1
 import platform
 from pathlib import *
