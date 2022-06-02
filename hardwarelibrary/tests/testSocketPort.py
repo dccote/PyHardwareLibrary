@@ -56,7 +56,7 @@ class TestSocketPort(unittest.TestCase):
     def testHWLStringMsg(self):
         for i in range(1000):
             self.port.open()
-            expectedText = 'DanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDanielDaniel\n'
+            expectedText = 'Daniel\n'
             self.port.writeString(expectedText)
             actualText = self.port.readString()
             self.assertEqual(actualText, expectedText)

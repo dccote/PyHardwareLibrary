@@ -13,11 +13,14 @@ class SocketPort(CommunicationPort):
         self.sock = None
 
     def open(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.host, self.port))
+        if self.sock is None:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.host, self.port))
 
     def close(self):
-        self.sock.close()
+        if self.sock is not None:
+            self.sock.close()
+            self.sock = None
 
     def readData(self, length, endPoint=0) -> bytearray:
         chunks = []

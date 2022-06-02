@@ -10,6 +10,8 @@ from hardwarelibrary.spectrometers import Spectrometer
 from hardwarelibrary.powermeters import PowerMeterDevice, IntegraDevice
 from hardwarelibrary.oscilloscope import OscilloscopeDevice
 from hardwarelibrary.communication.diagnostics import *
+from flask import Flask, jsonify
+
 
 class DeviceManagerNotification(Enum):
     status              = "status"
@@ -316,3 +318,37 @@ class DeviceManager:
         else:
             print("Device {0} is not Ready: call initializeDevice()".format(device))
 
+
+app = Flask("Device Manager REST Server")
+
+class Server:
+    def __init__(self, deviceManager):
+        self.thread = None
+
+    def start(self):
+        self.thread = Thread(target=app.run)
+        self.thread.start()
+
+    def stop(self):
+        self.thread.join()
+
+    @app.route('/todo/api/v1.0/tasks', methods=['GET'])
+    def get_tasks():
+        return jsonify({'tasks': "test"})
+
+    @app.route('/shutdown', methods=['POST'])
+    def shutdown():
+        self.shutdown_server()
+        return 'Server shutting down...'
+
+    def shutdown_server():
+        func = request.environ.get('werkzeug.server.shutdown')
+        if func is None:
+            raise RuntimeError('Not running with the Werkzeug Server')
+        func()
+
+if __name__ == "__main__":
+    server = Server(None)
+    server.start()
+    time.sleep(5)
+    server.stop()

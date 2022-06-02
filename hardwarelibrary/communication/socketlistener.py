@@ -34,4 +34,9 @@ if __name__ == "__main__":
     with socketserver.TCPServer((HOST, PORT), MyHWLHandler) as server:
         # Activate the server; this will keep running until you
         # interrupt the program with Ctrl-C
-        server.serve_forever()
+        server.daemon_threads = True
+        server.allow_reuse_address = True
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            sys.exit(0)

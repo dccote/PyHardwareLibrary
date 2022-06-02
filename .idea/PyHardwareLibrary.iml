@@ -11,6 +11,8 @@
       <sourceFolder url="file://$MODULE_DIR$/hardwarelibrary/spectrometers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/hardwarelibrary/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/hardwarelibrary/cameras" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hardwarelibrary/daq" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hardwarelibrary/oscilloscope" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/hardwarelibrary/tests/htmlcov" />
     </content>
