@@ -2,7 +2,7 @@ import env
 import unittest
 
 from hardwarelibrary.devicemanager import *
-from hardwarelibrary.motion import DebugLinearMotionDevice, SutterDevice
+from hardwarelibrary.motion import DebugLinearMotionDevice, SutterDevice, IntellidriveDevice
 from hardwarelibrary.notificationcenter import NotificationCenter
 from hardwarelibrary.physicaldevice import PhysicalDevice, DeviceState, PhysicalDeviceNotification
 from hardwarelibrary.powermeters import IntegraDevice
@@ -185,6 +185,11 @@ class TestSutterPhysicalDevice(BaseTestCases.TestPhysicalDeviceBase):
     def setUp(self):
         super().setUp()
         self.device = SutterDevice(serialNumber="debug")
+
+class TestIntellidrivePhysicalDevice(BaseTestCases.TestPhysicalDeviceBase):
+    def setUp(self):
+        super().setUp()
+        self.device = IntellidriveDevice("AH06UKI3")
 
 class TestSpectrometerPhysicalDevice(BaseTestCases.TestPhysicalDeviceBase):
     def setUp(self):

@@ -3,7 +3,12 @@ from enum import Enum
 from hardwarelibrary.physicaldevice import PhysicalDevice
 from hardwarelibrary.notificationcenter import NotificationCenter, Notification
 from threading import Thread, RLock
-import cv2
+try:
+    import cv2
+except Exception as err:
+    print("No support for OpenCVcameras")
+    pass
+    
 import re
 
 class CameraDeviceNotification(Enum):

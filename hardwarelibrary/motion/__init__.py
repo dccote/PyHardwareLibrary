@@ -2,4 +2,6 @@
 
 from .linearmotiondevice import LinearMotionDevice
 from .linearmotiondevice import DebugLinearMotionDevice
-from .sutterdevice import SutterDevice
+from .rotationdevice import *
+from .sutterdevice import *
+from .intellidrivedevice import *

@@ -120,16 +120,20 @@ class SerialPort(CommunicationPort):
         # ftdi:///? does not work for some reason.
         vidpids = [(4930, 1)] # Must add custom pairs in the future.
 
-        urls = []        
-        for vid, pid in vidpids:
-            pyftdidevices = Ftdi.list_devices(url="ftdi://{0}:{1}/1".format(vid, pid))
-            for device, address in pyftdidevices:
-                thePort = ListPortInfo(device="")
-                thePort.vid = device.vid
-                thePort.pid = device.pid
-                thePort.serial_number = device.sn
-                thePort.device = "ftdi://{0}:{1}:{2}/{3}".format(device.vid, device.pid, device.sn, address)
-                urls.append(thePort)
+        urls = []
+
+        try:
+            for vid, pid in vidpids:
+                pyftdidevices = Ftdi.list_devices(url="ftdi://{0}:{1}/1".format(vid, pid))
+                for device, address in pyftdidevices:
+                    thePort = ListPortInfo(device="")
+                    thePort.vid = device.vid
+                    thePort.pid = device.pid
+                    thePort.serial_number = device.sn
+                    thePort.device = "ftdi://{0}:{1}:{2}/{3}".format(device.vid, device.pid, device.sn, address)
+                    urls.append(thePort)
+        except Exception as err:
+            pass
 
         return urls
 
@@ -182,6 +186,12 @@ class SerialPort(CommunicationPort):
             self.port.flushInput()
             self.port.flushOutput()
             time.sleep(0.02)
+
+    def readString(self, endPoint=0):
+        with self.portLock:
+            data = self.port.read_until(expected=self.terminator)
+
+        return data.decode()
 
     def readData(self, length, endPoint=0) -> bytearray:
         with self.portLock:
