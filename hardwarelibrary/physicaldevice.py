@@ -69,7 +69,7 @@ class PhysicalDevice:
     @classmethod
     def isCompatibleWith(cls, serialNumber, idProduct, idVendor):
         for compatibleIdVendor, compatibleIdProduct in cls.vidpids():
-            if idVendor == compatibleIdVendor and idProduct == compatibleIdProduct:
+            if idVendor == compatibleIdVendor and (idProduct == compatibleIdProduct or compatibleIdProduct is None):
                 return True
 
         return False

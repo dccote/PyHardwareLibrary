@@ -49,7 +49,7 @@ class SutterDevice(LinearMotionDevice):
                 self.port.open(baudRate=128000, timeout=10)
 
             if self.port is None:
-                raise PhysicalDevice.UnableToInitialize("Cannot allocate port {0}".format(self.portPath))
+                raise PhysicalDevice.UnableToInitialize("Cannot allocate port {0}".format(portPath))
 
             self.positionInMicrosteps()
 

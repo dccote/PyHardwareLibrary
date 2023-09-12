@@ -62,7 +62,7 @@ class SerialPort(CommunicationPort):
         return None
 
     @classmethod
-    def matchPorts(cls, idVendor=None, idProduct=None, serialNumber=None):
+    def matchPortObjects(cls, idVendor=None, idProduct=None, serialNumber=None):
         # We must provide idVendor, idProduct and serialNumber
         # or              idVendor and idProduct
         # or              idVendor
@@ -81,7 +81,7 @@ class SerialPort(CommunicationPort):
             pass
 
 
-        # It sometimes happens on macOS that the ports are "doubled" because two user-space DriverExtension 
+        # It sometimes happens on macOS that the ports are "doubled" because two user-space DriverExtension
         # prepare a port (FTDI and Apple's for instance).  If that is the case, then we try to remove duplicates
 
         portObjects = []
@@ -102,14 +102,18 @@ class SerialPort(CommunicationPort):
                     if re.search(serialNumber, port.serial_number, re.IGNORECASE):
                         portObjects.append(port)
 
+        return portObjects
 
+    @classmethod
+    def matchPorts(cls, idVendor=None, idProduct=None, serialNumber=None):
+        portObjects = cls.matchPortObjects(idVendor, idProduct, serialNumber)
         ports = []
         # portsAlreadyAdded = []
         for port in portObjects:
             # uniqueIdentifier = (port.vid, port.pid, port.serial_number)
-            # if not (uniqueIdentifier in portsAlreadyAdded):                
+            # if not (uniqueIdentifier in portsAlreadyAdded):
             ports.append(port.device)
-                # portsAlreadyAdded.append(uniqueIdentifier)
+            # portsAlreadyAdded.append(uniqueIdentifier)
 
         return ports
 
@@ -191,7 +195,7 @@ class SerialPort(CommunicationPort):
         with self.portLock:
             data = self.port.read_until(expected=self.terminator)
 
-        return data.decode()
+        return data.decode('utf-8', 'replace')
 
     def readData(self, length, endPoint=0) -> bytearray:
         with self.portLock:

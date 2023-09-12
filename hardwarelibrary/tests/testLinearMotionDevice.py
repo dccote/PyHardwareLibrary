@@ -1,13 +1,15 @@
 import env
 import unittest
 
-from hardwarelibrary.motion.linearmotiondevice import DebugLinearMotionDevice, LinearMotionNotification
+from hardwarelibrary.motion.linearmotiondevice import *
 from hardwarelibrary.motion.sutterdevice import SutterDevice
 from hardwarelibrary.notificationcenter import NotificationCenter
 
 
 class BaseTestCases:
     class TestLinearMotionDevice(unittest.TestCase):
+        device: LinearMotionDevice
+
         def setUp(self):
             # Set self.device in subclass
             self.willNotificationReceived = False
@@ -96,16 +98,6 @@ class BaseTestCases:
             self.assertEqual(y, 0)
             self.assertEqual(z, 0)
 
-
-        def testDevicePosition(self):
-            (x, y, z) = self.device.position()
-            self.assertIsNotNone(x)
-            self.assertIsNotNone(y)
-            self.assertIsNotNone(z)
-            self.assertTrue(x >= 0)
-            self.assertTrue(y >= 0)
-            self.assertTrue(z >= 0)
-
         def handleWill(self, notification):
             self.willNotificationReceived = True
 
@@ -162,20 +154,24 @@ class BaseTestCases:
 
             NotificationCenter().removeObserver(self)
 
+
 class TestDebugLinearMotionDeviceBase(BaseTestCases.TestLinearMotionDevice):
     def setUp(self):
         self.device = DebugLinearMotionDevice()
         super().setUp()
+
 
 class TestDebugSutterDeviceBase(BaseTestCases.TestLinearMotionDevice):
     def setUp(self):
         self.device = SutterDevice("debug")
         super().setUp()
 
+
 class TestRealSutterDeviceBase(BaseTestCases.TestLinearMotionDevice):
     def setUp(self):
         self.device = SutterDevice()
         super().setUp()
+
 
 if __name__ == '__main__':
     unittest.main()

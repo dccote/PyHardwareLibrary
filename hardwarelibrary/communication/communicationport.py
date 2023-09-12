@@ -73,14 +73,12 @@ class CommunicationPort:
             except CommunicationReadTimeout as err:
                 raise CommunicationReadTimeout("Only obtained {0}".format(data))
 
-            string = data.decode(encoding='utf-8')
-
-        return string
+            return data.decode('utf-8', 'replace')
 
     def writeString(self, string, endPoint=None) -> int:
         nBytes = 0
         with self.portLock:
-            data = bytearray(string, "utf-8")
+            data = bytearray(string, 'utf-8', 'replace')
             nBytes = self.writeData(data, endPoint)
 
         return nBytes

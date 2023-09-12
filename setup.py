@@ -23,7 +23,7 @@ setuptools.setup(
     keywords='hardware devices usb communication app control spectrometer powermeter camera',
     packages=setuptools.find_packages(),
     install_requires=['numpy','matplotlib','PySerial','PyUSB','pyftdi','LabJackPython'],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     package_data = {
         # If any package contains *.txt or *.rst files, include them:
         '': ['*.png'],
@@ -44,7 +44,7 @@ setuptools.setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
 
         'Operating System :: OS Independent'
     ]

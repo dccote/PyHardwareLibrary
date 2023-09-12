@@ -177,7 +177,7 @@ class CoboltDebugSerial:
 
     def write(self, data:bytearray) -> int :
         with globalLock:
-            string = data.decode('utf-8')
+            string = data.decode('utf-8', 'replace')
 
             match = re.search("pa\\?", string)
             if match is not None:

@@ -163,6 +163,6 @@ class USBPort(CommunicationPort):
             try:
                 data += self.readData(length=1, endPoint=endPoint)
                 if data[-1] == 10: # How to write '\n' ?
-                    return data.decode(encoding='utf-8')
+                    return data.decode('utf-8', 'replace')
             except Exception as err:
                 raise IOError("Unable to read string terminator: {0}".format(err))

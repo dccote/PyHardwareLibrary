@@ -56,18 +56,19 @@ class DebugPort(CommunicationPort):
         return len(self.outputBuffers[endPoint])
 
     def flush(self):
-        self.buffers = [bytearray(),bytearray()]
+        self.inputBuffers = [bytearray()]
+        self.outputBuffers = [bytearray()]
 
     def readData(self, length, endPoint=None):
         if endPoint is None:
-            endPointIndex = 0
+            endPoint = 0
 
         with self.portLock:
             time.sleep(self.delay*random.random())
             data = bytearray()
             for i in range(0, length):
-                if len(self.outputBuffers[endPointIndex]) > 0:
-                    byte = self.outputBuffers[endPointIndex].pop(0)
+                if len(self.outputBuffers[endPoint]) > 0:
+                    byte = self.outputBuffers[endPoint].pop(0)
                     data.append(byte)
                 else:
                     raise CommunicationReadTimeout("Unable to read data")
@@ -76,12 +77,12 @@ class DebugPort(CommunicationPort):
 
     def writeData(self, data, endPoint=None):
         if endPoint is None:
-            endPointIndex = 0
+            endPoint = 0
 
         with self.portLock:
-            self.inputBuffers[endPointIndex].extend(data)
+            self.inputBuffers[endPoint].extend(data)
 
-        self.processInputBuffers(endPointIndex=endPointIndex)
+        self.processInputBuffers(endPoint)
 
         return len(data)
 
